@@ -28,7 +28,7 @@ PORT=3001
 **Frontend** — файл `frontend/.env`:
 
 ```env
-VITE_YANDEX_MAPS_APIKEY=<ключ JavaScript API и Карт 2.1 для localhost>
+VITE_YANDEX_MAPS_APIKEY=<ключ API Яндекс Карт>
 ```
 ---
 
