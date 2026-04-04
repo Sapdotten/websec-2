@@ -71,7 +71,7 @@ function RouteSearch() {
                     setFormError('Рейсы не найдены')
                 }
             } catch (err) {
-                setFormError('Ошибка: ' + err.message)
+                setFormError('Error: ' + err.message)
             }
 
             return null

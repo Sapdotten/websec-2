@@ -35,7 +35,7 @@ function SearchBar({ onToggleFavorite, favorites = [] }) {
             const stations = await searchStations(searchQuery.trim(), null, null, 500)
             const filtered = applyStations(stations)
             if (filtered.length === 0) {
-                setError('Ничего не найдено')
+                setError('Nothing found')
             }
         } catch (err) {
             setError('Ошибка: ' + err.message)
@@ -100,10 +100,10 @@ function SearchBar({ onToggleFavorite, favorites = [] }) {
             setSearchParams(params)
 
             if (filtered.length === 0) {
-                setError('Не удалось загрузить станции')
+                setError('Failed to load stations')
             }
         } catch (err) {
-            setError('Ошибка: ' + err.message)
+            setError('Error: ' + err.message)
         } finally {
             setLoading(false)
         }
