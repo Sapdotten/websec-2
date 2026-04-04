@@ -1,0 +1,130 @@
+@media (min-width: 768px) {
+    .header {
+        padding: 1.5rem 2rem;
+    }
+
+    .header-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .nav-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .main {
+        padding: 2rem;
+    }
+
+    .search-input {
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .train-card {
+        grid-template-columns: 100px 1fr 150px;
+        padding: 1.25rem;
+    }
+
+    .train-time .time {
+        font-size: 1.5rem;
+    }
+
+    .route-card {
+        padding: 1.25rem;
+    }
+
+    .route-time {
+        margin-bottom: 1rem;
+    }
+
+    .favorites-card {
+        padding: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .app {
+        max-width: 1000px;
+        margin: 0 auto;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .main {
+        padding: 2.5rem;
+    }
+
+    .train-card {
+        grid-template-columns: 120px 1fr 180px;
+    }
+
+    .schedule-header {
+        flex-wrap: nowrap;
+    }
+
+    .station-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .app {
+        max-width: 1200px;
+    }
+
+    .trains-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media print {
+
+    .header,
+    .footer,
+    .search-form,
+    .nav,
+    .back-btn,
+    .fav-btn,
+    .refresh-btn {
+        display: none !important;
+    }
+
+    .main {
+        padding: 0;
+    }
+
+    .train-card,
+    .route-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    :root {
+        --border: rgba(255, 255, 255, 0.35);
+        --border-input: rgba(255, 255, 255, 0.55);
+    }
+
+    .nav-btn.active {
+        border: 2px solid #ffffff;
+    }
+
+    .train-card,
+    .result-item,
+    .favorite-card {
+        border-width: 2px;
+    }
+}
