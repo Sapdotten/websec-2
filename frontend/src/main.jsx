@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { ConfigProvider, theme } from 'antd'
 import ruRU from 'antd/locale/ru_RU'
 import App from './App.jsx'
+import 'ol/ol.css'
 import './styles/main.css'
 import './styles/adaptive.css'
 

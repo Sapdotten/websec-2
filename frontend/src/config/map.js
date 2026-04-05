@@ -1,0 +1,1 @@
+export const DEFAULT_MAP_CENTER = [55.7558, 37.6173]

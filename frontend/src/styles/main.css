@@ -1155,62 +1155,34 @@ body::after {
     -webkit-backdrop-filter: blur(12px);
 }
 
-.yandex-map {
+.ol-station-map {
     width: 100%;
     height: 100%;
+    min-height: 200px;
     background: rgba(26, 0, 51, 0.2);
 }
 
-.map-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
+.ol-station-map .ol-viewport {
+    border-radius: inherit;
 }
 
-.yandex-map .ymaps-2-1-79-balloon__content {
-    font-family: 'Quicksand', system-ui, sans-serif !important;
-    background: rgba(26, 0, 51, 0.92) !important;
-    backdrop-filter: blur(20px) !important;
-    color: var(--text) !important;
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 10px !important;
-    font-size: 14px !important;
-    padding: 12px !important;
-    max-width: 250px !important;
+.map-container .ol-station-map .ol-control button,
+.map-container .ol-station-map .ol-attribution button {
+    background: rgba(26, 0, 51, 0.85);
+    color: var(--text);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
 }
 
-.yandex-map .ymaps-2-1-79-hint {
-    background: rgba(26, 0, 51, 0.9) !important;
-    color: var(--text) !important;
-    border: 1px solid var(--glass-border) !important;
-    font-family: 'Quicksand', system-ui, sans-serif !important;
-    border-radius: 8px !important;
-    padding: 6px 10px !important;
+.map-container .ol-station-map .ol-control button:hover,
+.map-container .ol-station-map .ol-attribution button:hover {
+    background: rgba(138, 43, 226, 0.35);
 }
 
-.yandex-map .ymaps-2-1-79-balloon__close {
-    color: var(--primary-light) !important;
-}
-
-.yandex-map .ymaps-2-1-79-balloon__header {
-    background: linear-gradient(135deg, #8a2be2 0%, #c084fc 100%) !important;
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    padding: 8px 12px !important;
-    margin: -12px -12px 12px -12px !important;
-    border-radius: 10px 10px 0 0 !important;
-}
-
-.yandex-map .ymaps-2-1-79-balloon__close:hover {
-    opacity: 1 !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-}
-
-.yandex-map .ymaps-2-1-79-balloon__shadow {
-    display: none !important;
+.map-container .ol-station-map .ol-attribution ul {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 10px;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
 }
 
 .ant-select-dropdown {
