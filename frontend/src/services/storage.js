@@ -1,10 +1,4 @@
-import React from 'react'
-
-const FAVORITES_KEY = 'elektrichki_favorites'
-
-const emitFavoritesChange = () => {
-    window.dispatchEvent(new Event('favorites:changed'))
-}
+export const FAVORITES_KEY = 'elektrichki_favorites'
 
 export function loadFavorites() {
     try {
@@ -24,10 +18,9 @@ export function saveFavorite(station) {
                 code: station.code,
                 title: station.title,
                 settlement: station.settlement,
-                region: station.region
+                region: station.region,
             })
             localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
-            emitFavoritesChange()
         }
         return favorites
     } catch (error) {
@@ -40,7 +33,6 @@ export function removeFavorite(stationCode) {
     try {
         const favorites = loadFavorites().filter(s => s.code !== stationCode)
         localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
-        emitFavoritesChange()
         return favorites
     } catch (error) {
         console.error('Remove favorite error:', error)
@@ -51,16 +43,4 @@ export function removeFavorite(stationCode) {
 export function isFavorite(stationCode) {
     const favorites = loadFavorites()
     return favorites.some(s => s.code === stationCode)
-}
-
-export function useFavorites() {
-    const [favorites, setFavorites] = React.useState(loadFavorites())
-
-    React.useEffect(() => {
-        const handler = () => setFavorites(loadFavorites())
-        window.addEventListener('favorites:changed', handler)
-        return () => window.removeEventListener('favorites:changed', handler)
-    }, [])
-
-    return favorites
 }

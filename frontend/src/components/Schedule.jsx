@@ -4,6 +4,7 @@ import { Spin, Button, Typography, Tag, Alert, Flex, Grid } from 'antd'
 import { ArrowLeftOutlined, ReloadOutlined } from '@ant-design/icons'
 import { getStationSchedule } from '../services/api.js'
 import { saveFavorite, removeFavorite, isFavorite } from '../services/storage.js'
+import { useFavoritesRefresh } from '../contexts/FavoritesRefreshContext.jsx'
 import starFilled from '../shared/icons/star-filled.png'
 import starEmpty from '../shared/icons/star-empty.png'
 
@@ -11,6 +12,7 @@ const { useBreakpoint } = Grid
 const { Title, Text } = Typography
 
 function Schedule({ station, onBack }) {
+    const refreshFavorites = useFavoritesRefresh()
     const location = useLocation()
     const screens = useBreakpoint()
     const [schedule, setSchedule] = useState([])
@@ -49,6 +51,7 @@ function Schedule({ station, onBack }) {
         if (favorite) removeFavorite(station.code)
         else saveFavorite(station)
         setFavorite(!favorite)
+        refreshFavorites()
     }
 
     if (loading) {

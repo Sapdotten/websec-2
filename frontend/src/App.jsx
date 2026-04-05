@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { Tabs, Typography } from 'antd'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import SearchBar from './components/SearchBar.jsx'
@@ -6,6 +6,8 @@ import Schedule from './components/Schedule.jsx'
 import RouteSearch from './components/RouteSearch.jsx'
 import Favorites from './components/Favorites.jsx'
 import { loadFavorites, saveFavorite, removeFavorite } from './services/storage.js'
+import { useFavoritesState } from './hooks/useFavoritesState.js'
+import { FavoritesRefreshContext } from './contexts/FavoritesRefreshContext.jsx'
 
 function StationRouteWrapper() {
     const navigate = useNavigate()
@@ -32,21 +34,13 @@ function StationRouteWrapper() {
 function App() {
     const location = useLocation()
     const navigate = useNavigate()
-    const [favorites, setFavorites] = useState([])
+    const [favorites, refreshFavorites] = useFavoritesState()
 
     const activeTab = useMemo(() => {
         if (location.pathname.startsWith('/route')) return 'route'
         if (location.pathname.startsWith('/favorites')) return 'favorites'
         return 'station'
     }, [location.pathname])
-
-    useEffect(() => {
-        const updateFavorites = () => setFavorites(loadFavorites())
-        updateFavorites()
-
-        window.addEventListener('favorites:changed', updateFavorites)
-        return () => window.removeEventListener('favorites:changed', updateFavorites)
-    }, [])
 
     const handleTabChange = (tab) => {
         navigate(tab === 'station' ? '/' : `/${tab}`)
@@ -56,12 +50,14 @@ function App() {
         const favs = loadFavorites()
         if (favs.some((favorite) => favorite.code === station.code)) {
             removeFavorite(station.code)
-            return
+        } else {
+            saveFavorite(station)
         }
-        saveFavorite(station)
+        refreshFavorites()
     }
 
     return (
+        <FavoritesRefreshContext.Provider value={refreshFavorites}>
         <div className="app">
             <header className="header">
                 <Typography.Title level={3} className="header-title" style={{ margin: 0, textAlign: 'center' }}>
@@ -111,13 +107,14 @@ function App() {
                                     navigate(`/station/${station.code}`, { state: { station } })
                                 }
                                 onTabChange={handleTabChange}
-                                onUpdateFavorites={() => setFavorites(loadFavorites())}
+                                onUpdateFavorites={refreshFavorites}
                             />
                         </main>
                     }
                 />
             </Routes>
         </div>
+        </FavoritesRefreshContext.Provider>
     )
 }
 
