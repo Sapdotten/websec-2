@@ -15,22 +15,20 @@ function Favorites({ favorites, onSelectStation, onTabChange, onUpdateFavorites 
         onTabChange('station')
     }
 
-    if (favorites.length === 0) {
-        return (
-            <div className="favorites-empty">
-                <Empty
-                    image={<img src="/what-cat.gif" alt="" className="favorites-empty-cat" draggable={false} />}
-                    description="У вас нет избранных станций"
-                >
-                    <Button type="primary" onClick={() => onTabChange('station')}>
-                        Добавить станцию
-                    </Button>
-                </Empty>
-            </div>
-        )
-    }
+    const renderEmpty = () => (
+        <div className="favorites-empty">
+            <Empty
+                image={<img src="/what-cat.gif" alt="" className="favorites-empty-cat" draggable={false} />}
+                description="У вас нет избранных станций"
+            >
+                <Button type="primary" onClick={() => onTabChange('station')}>
+                    Добавить станцию
+                </Button>
+            </Empty>
+        </div>
+    )
 
-    return (
+    const renderFavoritesList = () => (
         <div className="favorites-container">
             <Typography.Title level={4} className="section-title">
                 Избранные станции
@@ -65,6 +63,8 @@ function Favorites({ favorites, onSelectStation, onTabChange, onUpdateFavorites 
             </Flex>
         </div>
     )
+
+    return <>{favorites.length === 0 ? renderEmpty() : renderFavoritesList()}</>
 }
 
 export default Favorites

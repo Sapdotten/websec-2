@@ -1,5 +1,7 @@
 import React from 'react'
 import { Button, Typography, Flex } from 'antd'
+import starFilled from '../shared/icons/star-filled.png'
+import starEmpty from '../shared/icons/star-empty.png'
 
 function StationResults({ results, favorites, onSelect, onToggleFavorite }) {
     if (results.length === 0) return null
@@ -37,7 +39,7 @@ function StationResults({ results, favorites, onSelect, onToggleFavorite }) {
                             onClick={(event) => onToggleFavorite(event, station)}
                             icon={
                                 <img
-                                    src={isFav ? '/star-filled.png' : '/star-empty.png'}
+                                    src={isFav ? starFilled : starEmpty}
                                     alt=""
                                     style={{ width: 20, height: 20, display: 'block' }}
                                     draggable={false}

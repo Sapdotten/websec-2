@@ -35,7 +35,7 @@ function SearchBar({ onToggleFavorite, favorites = [] }) {
             const stations = await searchStations(searchQuery.trim(), null, null, 500)
             const filtered = applyStations(stations)
             if (filtered.length === 0) {
-                setError('Nothing found')
+                setError('Ничего не найдено')
             }
         } catch (err) {
             setError('Ошибка: ' + err.message)
@@ -58,24 +58,31 @@ function SearchBar({ onToggleFavorite, favorites = [] }) {
         await runSearch(query)
     }
 
+    const buildStationQueryString = () => {
+        const q = encodeURIComponent(query)
+        const map = showMap ? '&map=1' : ''
+        return `?q=${q}${map}`
+    }
+
     const handleSelect = (station) => {
         navigate(
-            `/station/${station.code}?q=${encodeURIComponent(query)}${showMap ? '&map=1' : ''}`,
+            {
+                pathname: `/station/${station.code}`,
+                search: buildStationQueryString(),
+            },
             { state: { station } },
         )
     }
 
     const handleMapStationSelect = (station) => {
         navigate(
-            `/station/${station.code}?q=${encodeURIComponent(query)}${showMap ? '&map=1' : ''}`,
+            {
+                pathname: `/station/${station.code}`,
+                search: buildStationQueryString(),
+                hash: 'station-schedule',
+            },
             { state: { station } },
         )
-        setTimeout(() => {
-            document.querySelector('.schedule-container')?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            })
-        }, 100)
     }
 
     const handleFavoriteClick = (e, station) => {
@@ -100,10 +107,10 @@ function SearchBar({ onToggleFavorite, favorites = [] }) {
             setSearchParams(params)
 
             if (filtered.length === 0) {
-                setError('Failed to load stations')
+                setError('Не удалось загрузить станции')
             }
         } catch (err) {
-            setError('Error: ' + err.message)
+            setError('Ошибка: ' + err.message)
         } finally {
             setLoading(false)
         }

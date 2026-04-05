@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Spin, Button, Typography, Tag, Alert, Flex, Grid } from 'antd'
 import { ArrowLeftOutlined, ReloadOutlined } from '@ant-design/icons'
 import { getStationSchedule } from '../services/api.js'
 import { saveFavorite, removeFavorite, isFavorite } from '../services/storage.js'
+import starFilled from '../shared/icons/star-filled.png'
+import starEmpty from '../shared/icons/star-empty.png'
 
-const { useBreakpoint } = Grid;
-const { Title, Text } = Typography;
-
+const { useBreakpoint } = Grid
+const { Title, Text } = Typography
 
 function Schedule({ station, onBack }) {
+    const location = useLocation()
     const screens = useBreakpoint()
     const [schedule, setSchedule] = useState([])
     const [loading, setLoading] = useState(true)
@@ -22,7 +25,7 @@ function Schedule({ station, onBack }) {
             const scheduleData = await getStationSchedule(station.code)
             setSchedule(scheduleData.segments || scheduleData.schedule || [])
         } catch (err) {
-            setError('Download error: ' + err.message)
+            setError('Ошибка загрузки: ' + err.message)
         } finally {
             setLoading(false)
         }
@@ -32,6 +35,15 @@ function Schedule({ station, onBack }) {
         loadData()
         setFavorite(isFavorite(station.code))
     }, [loadData, station.code])
+
+    useLayoutEffect(() => {
+        if (location.hash !== '#station-schedule') return
+        if (loading || error) return
+        document.getElementById('station-schedule')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        })
+    }, [location.hash, loading, error])
 
     const handleToggleFavorite = () => {
         if (favorite) removeFavorite(station.code)
@@ -58,7 +70,11 @@ function Schedule({ station, onBack }) {
     }
 
     return (
-        <div className="schedule-wrapper" style={{ padding: screens.xs ? '8px' : '16px' }}>
+        <div
+            id="station-schedule"
+            className="schedule-wrapper"
+            style={{ padding: screens.xs ? '8px' : '16px' }}
+        >
             <Flex
                 justify="space-between"
                 align="center"
@@ -85,7 +101,7 @@ function Schedule({ station, onBack }) {
                     aria-label={favorite ? 'Убрать из избранного' : 'Добавить в избранное'}
                     icon={
                         <img
-                            src={favorite ? '/star-filled.png' : '/star-empty.png'}
+                            src={favorite ? starFilled : starEmpty}
                             alt=""
                             style={{ width: 24, height: 24, display: 'block' }}
                             draggable={false}
