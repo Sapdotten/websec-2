@@ -23,13 +23,21 @@
 ```env
 YANDEX_API_KEY=<ключ API Яндекс.Расписаний>
 PORT=3001
+YANDEX_RASP_BASE=https://api.rasp.yandex.net/v3.0
+STATIONS_CACHE_TTL_MS=604800000
 ```
 
-**Frontend** — файл `frontend/.env`:
+`STATIONS_CACHE_TTL_MS` — срок жизни файлового кэша справочника станций в миллисекундах (пример: 7 суток).
+
+**Frontend** — файл `frontend/.env` (скопировать из `frontend/.env.example`):
 
 ```env
-VITE_YANDEX_MAPS_APIKEY=<ключ API Яндекс Карт>
+VITE_API_BASE=http://localhost:3001/api
 ```
+
+Полный URL API бэкенда (как в примере), чтобы фронт не ходил на себя через относительный `/api`. Порт должен совпадать с `PORT` бэкенда. Карта: [OpenLayers](https://openlayers.org/) + OSM, ключ не нужен.
+
+Шаблоны: `backend/.env.example`, `frontend/.env.example`.
 ---
 
 ## Установка и запуск
