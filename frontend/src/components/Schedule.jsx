@@ -11,67 +11,39 @@ import starEmpty from '../shared/icons/star-empty.png'
 const { useBreakpoint } = Grid
 const { Title, Text } = Typography
 
-function Schedule({ station, onBack }) {
-    const refreshFavorites = useFavoritesRefresh()
-    const location = useLocation()
-    const screens = useBreakpoint()
-    const [schedule, setSchedule] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const [favorite, setFavorite] = useState(false)
+function renderScheduleLoading() {
+    return (
+        <Flex align="center" justify="center" style={{ minHeight: '200px' }}>
+            <Spin tip="Загрузка расписания..." />
+        </Flex>
+    )
+}
 
-    const loadData = useCallback(async () => {
-        setLoading(true)
-        setError(null)
-        try {
-            const scheduleData = await getStationSchedule(station.code)
-            setSchedule(scheduleData.segments || scheduleData.schedule || [])
-        } catch (err) {
-            setError('Ошибка загрузки: ' + err.message)
-        } finally {
-            setLoading(false)
-        }
-    }, [station.code])
+function renderScheduleError(error, onRetry) {
+    return (
+        <div style={{ padding: '20px' }}>
+            <Alert
+                type="error"
+                message={error}
+                action={
+                    <Button size="small" type="primary" onClick={onRetry}>
+                        Повторить
+                    </Button>
+                }
+            />
+        </div>
+    )
+}
 
-    useEffect(() => {
-        loadData()
-        setFavorite(isFavorite(station.code))
-    }, [loadData, station.code])
-
-    useLayoutEffect(() => {
-        if (location.hash !== '#station-schedule') return
-        if (loading || error) return
-        document.getElementById('station-schedule')?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-        })
-    }, [location.hash, loading, error])
-
-    const handleToggleFavorite = () => {
-        if (favorite) removeFavorite(station.code)
-        else saveFavorite(station)
-        setFavorite(!favorite)
-        refreshFavorites()
-    }
-
-    if (loading) {
-        return (
-            <Flex align="center" justify="center" style={{ minHeight: '200px' }}>
-                <Spin tip="Загрузка расписания..." />
-            </Flex>
-        )
-    }
-
-    if (error) {
-        return (
-            <div style={{ padding: '20px' }}>
-                <Alert type="error" message={error} action={
-                    <Button size="small" type="primary" onClick={loadData}>Повторить</Button>
-                } />
-            </div>
-        )
-    }
-
+function renderScheduleContent({
+    screens,
+    station,
+    schedule,
+    loadData,
+    onBack,
+    favorite,
+    onToggleFavorite,
+}) {
     return (
         <div
             id="station-schedule"
@@ -100,7 +72,7 @@ function Schedule({ station, onBack }) {
                     type="text"
                     size="large"
                     className="fav-star-btn"
-                    onClick={handleToggleFavorite}
+                    onClick={onToggleFavorite}
                     aria-label={favorite ? 'Убрать из избранного' : 'Добавить в избранное'}
                     icon={
                         <img
@@ -167,6 +139,63 @@ function Schedule({ station, onBack }) {
             )}
         </div>
     )
+}
+
+function Schedule({ station, onBack }) {
+    const refreshFavorites = useFavoritesRefresh()
+    const location = useLocation()
+    const screens = useBreakpoint()
+    const [schedule, setSchedule] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [favorite, setFavorite] = useState(false)
+
+    const loadData = useCallback(async () => {
+        setLoading(true)
+        setError(null)
+        try {
+            const scheduleData = await getStationSchedule(station.code)
+            setSchedule(scheduleData.segments || scheduleData.schedule || [])
+        } catch (err) {
+            setError('Ошибка загрузки: ' + err.message)
+        } finally {
+            setLoading(false)
+        }
+    }, [station.code])
+
+    useEffect(() => {
+        loadData()
+        setFavorite(isFavorite(station.code))
+    }, [loadData, station.code])
+
+    useLayoutEffect(() => {
+        if (location.hash !== '#station-schedule') return
+        if (loading || error) return
+        document.getElementById('station-schedule')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        })
+    }, [location.hash, loading, error])
+
+    const handleToggleFavorite = () => {
+        if (favorite) removeFavorite(station.code)
+        else saveFavorite(station)
+        setFavorite(!favorite)
+        refreshFavorites()
+    }
+
+    if (loading) return renderScheduleLoading()
+    if (error) return renderScheduleError(error, loadData)
+
+    return renderScheduleContent({
+        screens,
+        station,
+        schedule,
+        loadData,
+        onBack,
+        favorite,
+        onToggleFavorite: handleToggleFavorite,
+    })
 }
 
 export default Schedule

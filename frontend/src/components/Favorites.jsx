@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Typography, Empty, Flex } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { removeFavorite } from '../services/storage.js'
+import whatCatGif from '../shared/what-cat.gif'
 
 function Favorites({ favorites, onSelectStation, onTabChange, onUpdateFavorites }) {
     const handleRemoveFavorite = (code, e) => {
@@ -18,7 +19,7 @@ function Favorites({ favorites, onSelectStation, onTabChange, onUpdateFavorites 
     const renderEmpty = () => (
         <div className="favorites-empty">
             <Empty
-                image={<img src="/what-cat.gif" alt="" className="favorites-empty-cat" draggable={false} />}
+                image={<img src={whatCatGif} alt="" className="favorites-empty-cat" draggable={false} />}
                 description="У вас нет избранных станций"
             >
                 <Button type="primary" onClick={() => onTabChange('station')}>

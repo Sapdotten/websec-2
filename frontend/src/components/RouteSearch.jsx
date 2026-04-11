@@ -3,6 +3,7 @@ import { Select, DatePicker, Button, Space, Typography, Tag, Alert, Flex } from 
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 import { searchStations, getRouteSchedule } from '../services/api.js'
+import { formatDuration } from '../utils/duration.js'
 
 dayjs.locale('ru')
 
@@ -86,13 +87,6 @@ function RouteSearch() {
         const d = new Date(dateString)
         if (isNaN(d.getTime())) return '—'
         return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
-    }
-
-    const formatDuration = (seconds) => {
-        if (!seconds) return ''
-        const h = Math.floor(seconds / 3600)
-        const m = Math.floor((seconds % 3600) / 60)
-        return `${h}ч ${m}м`
     }
 
     const fromOptions = fromStations.map((s) => ({

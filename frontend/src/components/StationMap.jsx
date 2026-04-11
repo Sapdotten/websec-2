@@ -12,6 +12,10 @@ import { Style, Circle, Fill, Stroke } from 'ol/style.js'
 import { defaults as defaultControls } from 'ol/control/defaults.js'
 import { isEmpty } from 'ol/extent.js'
 import { DEFAULT_MAP_CENTER } from '../config/map.js'
+import { getSourceFromVectorLayerByName, getVectorLayerByName } from '../utils/openlayers.js'
+
+const MAP_LAYER_STATIONS = 'stations'
+const MAP_LAYER_USER_LOCATION = 'user-location'
 
 function makeStationStyle(feature, selectedCode) {
     const station = feature.get('station')
@@ -39,9 +43,6 @@ function StationMap({ stations, onStationSelect, userLocation }) {
     const [selectedCode, setSelectedCode] = useState(null)
     const mapRef = useRef(null)
     const mapInstanceRef = useRef(null)
-    const stationsSourceRef = useRef(null)
-    const stationsLayerRef = useRef(null)
-    const userSourceRef = useRef(null)
     const selectedCodeRef = useRef(selectedCode)
     const onSelectRef = useRef(onStationSelect)
 
@@ -64,20 +65,19 @@ function StationMap({ stations, onStationSelect, userLocation }) {
 
         const stationsSource = new VectorSource()
         const userSource = new VectorSource()
-        stationsSourceRef.current = stationsSource
-        userSourceRef.current = userSource
 
         const stationsLayer = new VectorLayer({
             source: stationsSource,
             style: (feature) => makeStationStyle(feature, selectedCodeRef.current),
         })
-        stationsLayerRef.current = stationsLayer
+        stationsLayer.set('name', MAP_LAYER_STATIONS)
 
         const userLayer = new VectorLayer({
             source: userSource,
             style: userLocationStyle,
             zIndex: 10,
         })
+        userLayer.set('name', MAP_LAYER_USER_LOCATION)
 
         const map = new Map({
             target: mapRef.current,
@@ -102,22 +102,19 @@ function StationMap({ stations, onStationSelect, userLocation }) {
                     }
                     return false
                 },
-                { layerFilter: (layer) => layer === stationsLayer },
+                { layerFilter: (layer) => layer.get('name') === MAP_LAYER_STATIONS },
             )
         })
 
         return () => {
             map.setTarget(undefined)
             mapInstanceRef.current = null
-            stationsLayerRef.current = null
-            stationsSourceRef.current = null
-            userSourceRef.current = null
         }
     }, [])
 
     useEffect(() => {
-        const source = stationsSourceRef.current
         const map = mapInstanceRef.current
+        const source = getSourceFromVectorLayerByName(map, MAP_LAYER_STATIONS)
         if (!source || !map) return
 
         source.clear()
@@ -129,7 +126,7 @@ function StationMap({ stations, onStationSelect, userLocation }) {
                 }),
             )
         }
-        stationsLayerRef.current?.changed()
+        getVectorLayerByName(map, MAP_LAYER_STATIONS)?.changed()
 
         const view = map.getView()
         const extent = source.getExtent()
@@ -142,7 +139,7 @@ function StationMap({ stations, onStationSelect, userLocation }) {
     }, [preparedStations])
 
     useEffect(() => {
-        const source = userSourceRef.current
+        const source = getSourceFromVectorLayerByName(mapInstanceRef.current, MAP_LAYER_USER_LOCATION)
         if (!source) return
         source.clear()
         if (userLocation?.lat != null && userLocation?.lng != null) {
@@ -155,7 +152,7 @@ function StationMap({ stations, onStationSelect, userLocation }) {
     }, [userLocation])
 
     useEffect(() => {
-        stationsLayerRef.current?.changed()
+        getVectorLayerByName(mapInstanceRef.current, MAP_LAYER_STATIONS)?.changed()
     }, [selectedCode])
 
     return <div ref={mapRef} className="ol-station-map" role="application" aria-label="Карта станций" />

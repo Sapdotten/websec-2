@@ -2,7 +2,7 @@ function buildUrl(pathname, queryParams) {
     const base = process.env.YANDEX_RASP_BASE.trim().replace(/\/?$/, '/');
     const url = new URL(String(pathname).replace(/^\//, ''), base);
     for (const [k, v] of Object.entries(queryParams || {})) {
-        if (v !== undefined && v !== null && v !== '') {
+        if (Boolean(v)) {
             url.searchParams.set(k, String(v));
         }
     }
